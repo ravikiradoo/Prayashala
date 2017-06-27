@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,➥initial-scale=1">
+{% load static %}
+	<title>Prayashala</title>
+
+	<link rel="stylesheet" type="text/css" href="{% static 'PrayaShala/Ihome.css' %}">
+	 <link href="{% static 'PrayaShala/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'PrayaShala/css/bootstrap-theme.min.css' %}" rel="stylesheet">
+    <link href="{% static 'PrayaShala/css/font-awesome.min.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+       <script src="{% static 'PrayaShala/js/jquery.min.js' %}"></script>
+       <script >
+       $(document).ready(function(){
+
+       		$("#Live").show();
+    		$("#Upcoming").hide();
+
+      
+        $("#faculty").click(function(){
+
+         $("#Fform").submit();
+         return false;
+
+          });
+           $("#Achivement").click(function(){
+
+         $("#Aform").submit();
+         return false;
+
+          });
+
+            $("#Students").click(function(){
+
+         $("#Sform").submit();
+         return false;
+
+          });
+              $("#blog").click(function(){
+
+         $("#Bform").submit();
+         return false;
+
+          });
+              
+        $("#Test").click(function(){
+
+         $("#Cform").submit();
+         return false;
+
+          });
+
+       
+
+
+          $("#upcoming").click(function(){
+    		
+    		
+    		$("#Live").hide();
+    		$("#Upcoming").show();
+    		return false;
+
+          
+        });
+
+           $("#live").click(function(){
+    		
+    		
+    		$("#Live").show();
+    		$("#Upcoming").hide();
+    		return false;
+
+          
+        });
+         
+         
+
+         $(window).scroll(function(){
+
+            var wtop=$(window).scrollTop();
+            var divtop=$("#mainMenuBarAnchor").offset().top;
+
+            if(wtop>divtop)
+            {
+              $("#OEvent").addClass('stick');
+            }
+            else
+            { $("#OEvent").removeClass('stick');}
+
+         });
+
+         $(".links").click(function(){
+
+        var href=$(this).attr('id');
+               $("#F"+href).submit();
+        return false;
+
+         });
+
+       });
+       </script>
+      
+</head>
+<body>
+<div class="container-fluid" >
+   <div  class="row" >
+	<div class="col-xs-12 col-sm-12 col-md-12" id="header"  >
+     <nav class="navbar navbar-transparent animated-header " style="margin:10px;">
+	<div class="container-fluid">
+	<div class="row">
+	<div class="col-xs-12 col-sm-3 col-md-3">
+	<div class="navbar-header">
+	  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#Navbar">
+       <span class="sr-only">Toggle navigation</span>
+                    Menu <i class="fa fa-bars"></i>
+      </button>
+    <a class="navbar-brand" href="#" id="prayashala" style="font-family:cursive;font-size:30px">{{dataI.Institute_Name}}</a>
+    </div>	
+    </div>
+    <div class="col-xs-12 col-sm-2 col-md-2"></div>
+    <div class="col-xs-12 col-sm-7 col-md-7">
+	<div class="collapse navbar-collapse" id="Navbar">
+      <ul class="nav navbar-nav navbar-right navLink" >
+        <li class="active" ><a href="#" class="button" id="Home" style="background-color: transparent; text-decoration: none;"> Home</a></li>
+        <li ><a href="#" class="button" id="blog" style="background-color: transparent; text-decoration: none;">Blog</a></li>
+         <li><a href="#" class="button" id="faculty" style="background-color: transparent; text-decoration: none;">Faculty Profiles</a></li>
+          <li><a href="#" class="button" id="Achivement" style="background-color: transparent; text-decoration: none;">Achivements</a></li>
+          
+
+      </ul>
+      </div>
+      </div>
+      </div>
+      </div>
+</nav>
+
+</div>
+</div>
+
+<div id="mainMenuBarAnchor"></div>
+<div class="row" id="OEvent" style="padding:20px;background-color:black;">
+<div class="col-sm-4"></div>
+  <div class="col-sm-2" id="Live2">
+  <center><a href="#" id="live" style="font-family:cursive;font-size:20px;color:white;text-decoration:none">Live</a></center>
+  </div>
+  <div class="col-sm-2" id="Up">
+  <center>  <a href="#Upcoming" id="upcoming" style="font-family:cursive;font-size:20px;color:white;text-decoration:none"> Up Coming </a> </center>
+  </div>
+<div class="col-sm-4"></div>
+</div>
+
+<div class="row "  id="main" >
+<div id="Live">
+<div class="col-xs-12 col-md-12 col-sm-12" id="dashboard">
+<div class="container-fluid">
+<div class="row">
+{% for Test in dataT %}
+{% if Test.Active %}
+<div class="col-xs-12 col-md-6 col-sm-6 testbox">
+
+<div class="row">
+<div class="col-xs-12 col-sm-12 col-md-12" style="font-size:20px">{{Test.Test_Name}}</div>
+<div class="col-xs-12 col-md-4 col-sm-4">Time Duration: {{Test.Duration}} Minutes</div>
+<div class="col-xs-12 col-md-4 col-sm-4">Total Questions: {{Test.No_of_Questions}} </div>
+<div class="col-xs-12 col-md-4 col-sm-4">
+<button id="{{Test.id}}" class="links" style="text-decoration:none">Start Test</button>
+</div>
+</div>
+
+<form style="display:hidden" id="F{{Test.id}}" method="post" action="/TestPaper/">
+  {% csrf_token %}
+  <input type="hidden" name="email1" value="{{dataI.Email}}" >
+   <input type="hidden" name="email2" value="{{dataS.Email}}" >
+   <input type="hidden" name="testid" value="{{Test.Test_id}}">
+</form>
+</div>
+{% endif %}
+{% endfor %}
+</div>
+</div>
+</div>
+
+</div>
+
+
+<div id="Upcoming">
+<div class="col-xs-12 col-md-12 col-sm-12" id="dashboard">
+<div class="container-fluid">
+<div class="row">
+{% for Test in dataT %}
+{% if not Test.Active %}
+<div class="col-xs-12 col-md-6 col-sm-6 testbox">
+
+<div class="row">
+<div class="col-xs-12 col-sm-12 col-md-12" style="font-size:20px">{{Test.Test_Name}}</div>
+<div class="col-xs-12 col-md-4 col-sm-4">Duration: {{Test.Duration}} Minutes</div>
+<div class="col-xs-12 col-md-3 col-sm-3">Total Questions: {{Test.No_of_Questions}} </div>
+<div class="col-xs-12 col-md-5 col-sm-5">Start Date: {{Test.publish_date}} </div>
+
+</div>
+</div>
+{% endif %}
+{% endfor %}
+</div>
+</div>
+</div>
+
+</div>
+
+
+
+</div>
+</div>
+
+
+
+<form style="display: hidden" action="/SFaculty/" method="POST" id="Fform">
+{% csrf_token %}
+
+  <input type="hidden" id="var1" name="email1" value={{dataI.Email}}>
+ <input type="hidden" id="var1" name="email2" value={{dataS.Email}}>
+
+</form>
+
+<form style="display: hidden" action="/SAchive/" method="POST" id="Aform">
+{% csrf_token %}
+
+  <input type="hidden" id="var1" name="email1" value={{dataI.Email}}>
+ <input type="hidden" id="var1" name="email2" value={{dataS.Email}}>
+</form>
+	
+  
+<form style="display: hidden" action="/SBlog/" method="POST" id="Bform">
+{% csrf_token %}
+
+  <input type="hidden" id="var1" name="email1" value={{dataI.Email}}>
+ <input type="hidden" id="var1" name="email2" value={{dataS.Email}}>
+</form>
+
+
+
+
+</body>
+
+
+</html>

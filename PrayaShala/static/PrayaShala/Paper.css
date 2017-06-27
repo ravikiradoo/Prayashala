@@ -1,0 +1,84 @@
+
+#modalcontent
+{
+	background-color: #FFF8DC;
+}
+#modalheader
+{
+	font-family: cursive;
+	font-size: 30px;
+}
+
+.qlinks
+{
+	color: black;
+	display: inline-block;
+	font-size: 20px;
+	border-style: solid;
+	margin: 10px;
+	padding: 5px;
+   border-width: 1px;
+   
+
+
+}
+
+.qlinks:hover
+{
+	color: black;
+}
+
+.shadow
+{
+	box-shadow:1px 1px 1px 1px black ;
+}
+
+#Quebox
+{
+	border-style: dotted;
+	border-width: 1px;
+	padding: 30px;
+}
+
+#QB
+{
+	border-style: dotted;
+	background-color: #ffe5e9;
+	border-color: green;
+	border-width: 1px;
+
+}
+
+#myProgress {
+    width: 100%;
+    background-color: grey;
+}
+#myBar {
+    width: 0%;
+    height: 10px;
+    background-color: blue;
+}
+
+.options
+{
+	width: 400px;
+	height: 41px;
+	border-style: solid;
+	border-width: 1px;
+	margin: 10px;
+	background-color: #92D4B3;
+	font-size: 20px;
+	font-family: cursive;
+	text-align: center;
+}
+.checkedAnswer
+{
+	text-align: center;
+}
+.chbox
+{
+	width: 30px;
+	height: 30px;
+
+}
+

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,➥initial-scale=1">
+{% load static %}
+	<title>Prayashala</title>
+
+	<link rel="stylesheet" type="text/css" href="{% static 'PrayaShala/blog.css' %}">
+	 <link href="{% static 'PrayaShala/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'PrayaShala/css/bootstrap-theme.min.css' %}" rel="stylesheet">
+    <link href="{% static 'PrayaShala/css/font-awesome.min.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+       <script src="{% static 'PrayaShala/js/jquery.min.js' %}"></script>
+       <script >
+       $(document).ready(function()
+       {
+
+       $("#Home").click(function(){
+
+         $("#IHome").submit();
+         return false;
+
+       });
+       $("#faculty").click(function(){
+
+         $("#Fform").submit();
+         return false;
+
+
+       });
+       $("#Achivement").click(function(){
+
+         $("#Aform").submit();
+         return false;
+
+
+       });
+       
+        $("#Students").click(function(){
+
+         $("#Sform").submit();
+
+         return false;
+
+
+       });
+        $("#CreateTest").click(function(){
+
+         $("#TestForm").submit();
+         return false;
+
+
+       });
+
+        $(".bloglinks").click(function(){
+
+          var href=$(this).attr("href");
+          $("#blogid").val(href);
+          $("#deleteblog").submit();
+          return false;
+        });
+
+        $("#deleteblog").submit(function(){
+
+          $.ajax({
+
+            url:"/DeleteBlog/",
+            type: "POST",             
+                data: new FormData(this), 
+                contentType: false,      
+                cache: false,            
+              processData:false,
+              success: function(data)   
+            {
+
+                alert(data);
+                $("#Blog").submit();
+
+           }
+
+
+          });
+          return false;
+
+        });
+
+
+        });
+
+       </script>
+      
+</head>
+<body>
+<div class="container-fluid">
+   <div  class="row">
+	<div class="col-xs-12 col-sm-12 col-md-12" id="header">
+     <nav class="navbar navbar-transparent animated-header " style="margin:10px;">
+	<div class="container-fluid">
+	<div class="row">
+	<div class="col-xs-12 col-sm-3 col-md-3">
+	<div class="navbar-header">
+	  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#Navbar">
+       <span class="sr-only">Toggle navigation</span>
+                    Menu <i class="fa fa-bars"></i>
+      </button>
+    <a class="navbar-brand" href="#" id="prayashala" style="font-family:cursive;font-size:30px">{{dataI.Institute_Name}}</a>
+    </div>	
+    </div>
+    <div class="col-xs-12 col-sm-2 col-md-2"></div>
+    <div class="col-xs-12 col-sm-8 col-md-8">
+	<div class="collapse navbar-collapse" id="Navbar">
+      <ul class="nav navbar-nav navbar-right navLink" >
+        <li  ><a href="#" class="button" id="Home" style="background-color: transparent; text-decoration: none;"> Home</a></li>
+        <li class="active"><a href="#" class="button" id="blog" style="background-color: transparent; text-decoration: none;">Blog</a></li>
+         <li><a href="#" class="button" id="faculty" style="background-color: transparent; text-decoration: none;">Faculty Profiles</a></li>
+          <li><a href="#" class="button" id="Achivement" style="background-color: transparent; text-decoration: none;">Achivements</a></li>
+           <li><a href="#" class="button" id="Students" style="background-color: transparent; text-decoration: none;">Students</a></li>
+          <li><a href="#" class="button" id="CreateTest" style="background-color: transparent; text-decoration: none;">Create Test</a></li>
+      </ul>
+      </div>
+      </div>
+      </div>
+      </div>
+</nav>
+
+</div>
+</div>
+
+<div class="row"  id="main">
+<div class="col-sm-1 col-md-1"></div>
+<div class="col-xs-12 col-md-10 col-sm-10" id="dashboard">
+
+<div class="container-fluid">
+
+
+  {% if dataB %}
+  {% for d in dataB %}
+  <div class="row" id="Blog{{d.id}}">
+   <div class="col-xs-12 col-sm-10 col-md-10"> <h1 id="Title">{{d.Title}}</h1></div>
+   <a href="{{d.id}}" class="bloglinks">Delete blog</a>
+    <div class="col-xs-12 col-sm-3 col-md-3"><h4 style="margin:0 auto">{{d.published_date}}</h4></div>
+    
+    <div class="col-xs-12 col-sm-6 col-md-6"></div>
+   
+     <div class="col-xs-12 col-sm-3 col-md-3">
+
+      <h4> by {{d.Author}}</h4>
+    </div>
+    <div class="col-xs-12 col-md-12 col-sm-12"> <p>{{d.Text}}</p> </div>
+
+      </div>
+  {% endfor %}
+  {% else %}
+  <h1>No Blog Added yet</h1>
+  {% endif %}
+   </div>
+   <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#blogModal">Add Blog</button>
+<div id="blogModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+      <div class="modal-content">
+<div class="modal-body">
+
+  <form action="/AddBlog/" id="Bform" method="POST" enctype="multipart/form-data" >
+  {% csrf_token %}
+  <input type="hidden" name="email" id="" placeholder="email" class="email" value={{Email}} >
+  <div class="form-group">
+  <input type="text" name="Title" id="" placeholder="Title"  value="" class="form-control">
+  </div>
+  <div class="form-group">
+  <input type="text" name="Author" id="" placeholder="Author"  class="form-control">
+  </div>
+  <div class="form-group">
+  <textarea name="Text" form="Bform" class="form-control">Enter text here...</textarea>
+  </div>
+    
+  <button type="submit">Post</button>
+    
+</form>
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div>
+  </div>
+  
+
+
+<div id="footer"  class="row">
+	
+	<div class="col-xs-12 col-md-4 col-sm-4">
+		<img src="{% static 'PrayaShala/logo2.png'%}" style="width:100%;height 100%;margin-top:30px;margin-bottom:30px">
+	</div>
+
+<div class="col-xs-12 col-md-1 col-sm-1"></div>
+<div class="col-xs-12 col-md-3 col-sm-3" class="contact">
+	<center><a href="#" style="font-size:20px;font-family:cursive;">Contact Us</a><br/></center>
+	<center><a href="#"><img src="{% static 'PrayaShala/facebook.png'%}" style="width:100px ;height:80px" class="social"></a>
+	<a href="#"><img src="{% static 'PrayaShala/linkidin.png'%}"  class="social" style="width:100px ;height:80px"></a>
+	<a href="#"><img src="{% static 'PrayaShala/Email.png'%}"  class="social" ></a>
+	<a href="#"><img src="{% static 'PrayaShala/t.png'%}" style="margin-left:20px" class="social" ></a></center>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</div>
+<div class="col-xs-12 col-sm-2 col-md-2"></div>
+<div class="col-xs-12 col-sm-2 col-md-2" style="padding:30px">
+	<h4>COMPANY</h4>
+	<a href="#" style="font-size:20px;font-family:cursive;">About Us</a></br>
+	
+</div>
+
+</div>
+</div>
+
+	
+  <form  style="display: hidden" action="/IFaculty/" method="POST" id="Fform">
+{% csrf_token %}
+
+  <input type="hidden" id="var1" name="email" value={{Email}}>
+</form>
+<form style="display: hidden" action="/IAchive/" method="POST" id="Aform">
+{% csrf_token %}
+
+  <input type="hidden" id="var2" name="email" value={{Email}}>
+</form>
+  
+  <form style="display: hidden" action="/IStudents/" method="POST" id="Sform">
+{% csrf_token %}
+
+  <input type="hidden" id="var1" name="email" value={{Email}}>
+</form>
+  
+<form style="display: hidden" action="/ILogin/" method="POST" id="IHome">
+{% csrf_token %}
+
+  <input type="hidden" id="var1" name="email" value={{Email}}>
+</form>
+<form style="display: hidden" action="//" method="POST" id="TestForm">
+{% csrf_token %}
+
+  <input type="hidden" id="var1" name="email" value={{Email}}>
+</form>
+<form style="display: hidden" action="/IBlog/" method="POST" id="Blog">
+{% csrf_token %}
+
+  <input type="hidden" id="var1" name="email" value={{Email}}>
+</form>
+
+<form action="DeleteBlog" style="display:hidden" id="deleteblog">
+{% csrf_token %}
+  <input type="hidden" name="pk" id="blogid" value="">
+</form>
+
+ 
+ 
+</body>
+
+
+</html>

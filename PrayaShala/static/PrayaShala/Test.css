@@ -1,0 +1,55 @@
+#left
+{
+height: 100vh;
+	background: url("exam.png") no-repeat;
+-webkit-background-size: cover;
+-moz-background-size: cover;
+-o-background-size: cover;
+background-size: 100% 100vh;
+  }
+
+
+  #header
+  {
+  	background-color: #FFFAF0;
+  }
+  
+.button
+{	color: 	#CD853F;
+	font-size: 20px;
+	font-family: cursive;
+	background-color: transparent;
+	text-decoration: none;
+	
+}
+
+
+#footer
+{
+	background-color:	rgb(30,30,50);
+	padding: 30px;
+}
+.social
+{
+  display: inline-block;
+  width: 70px;
+  height:60px;        
+  display:inline;
+}
+.Time
+{
+display:inline-block;
+}
+#datepicker
+{
+background-image: url("Calendar.png");
+background-position:95% 50%;
+background-repeat: no-repeat;
+}
+
+#time
+{
+background-image: url("clock.png");
+background-position:95% 50%;
+background-repeat: no-repeat;
+}

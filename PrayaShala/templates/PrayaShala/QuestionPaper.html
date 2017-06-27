@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,➥initial-scale=1">
+{% load static %}
+	<title>Prayashala</title>
+
+	<link rel="stylesheet" type="text/css" href="{% static 'PrayaShala/Paper.css' %}">
+	 <link href="{% static 'PrayaShala/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'PrayaShala/css/bootstrap-theme.min.css' %}" rel="stylesheet">
+    <link href="{% static 'PrayaShala/css/font-awesome.min.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ <script src="{% static 'PrayaShala/js/jquery.min.js' %}"> </script>
+
+       <script >
+       $(document).ready(function(){
+
+var TotalSeconds=parseInt($("#dur").val())*60;
+var Max_Time=TotalSeconds;
+var width;
+
+
+UpdateTimer();
+
+var myVar = setInterval(Tick, 1000);
+
+
+
+function Tick() {
+
+if (TotalSeconds <= 0) {
+alert("Time's up!");
+$("#finish").click();
+clearInterval(myVar);
+return;
+}
+
+TotalSeconds -= 1;
+UpdateTimer();
+};
+
+function UpdateTimer() {
+  var Seconds = TotalSeconds;
+
+var Hours = Math.floor(Seconds / 3600);
+Seconds -= Hours * (3600);
+
+var Minutes = Math.floor(Seconds / 60);
+Seconds -= Minutes * (60);
+
+var Time = AddZero(Hours) + ':' +AddZero( Minutes) + ':' + AddZero(Seconds) ;
+
+$('#timer').html(Time);
+
+width=((Max_Time-TotalSeconds)/Max_Time)*100;
+
+var bar=document.getElementById("myBar"); 
+bar.style.width=width+'%';
+
+};
+
+function AddZero(Time) {
+
+return (Time < 10) ? "0" + Time : + Time;
+
+};
+
+
+
+var marks;
+var nmarks;
+var AnswerTemp;
+var Qno=1;
+var total=$("#totalQ").val();
+var totalMarks=0;
+var Attempted=0;
+var Correct=0;
+var Wrong=0;
+var Marks=new Array(total+1).fill("#");
+var no_of_opt;
+$("#Result").hide();
+
+
+$('#prev').prop('disabled', true);
+
+$("#1").addClass("shadow");
+
+if(Qno==total)
+{
+	$('#next').prop('disabled', true);
+}
+else
+{
+	$('#next').prop('disabled', false);
+}
+
+
+				
+
+$("#modalbutton").hide();
+$("#modalbutton").click();
+$("#start").hide();
+$("#ok").click(function(){
+	
+	$("#start").click();
+});
+$("#fp").submit(function(){
+
+$.ajax({
+
+	url:"/FetchPaper/",
+	dataType:"json",
+	type:"POST",
+	data: new FormData(this), 
+    contentType: false,      
+    cache: false,            
+    processData:false,  
+	success:function(data){
+
+		
+
+			$("#Qno").html("Question"+data.Question_No);
+			Qno=data.Question_No;
+			$("#Question").html(data.Question);
+			if(data.Image!="")
+			$("#Qimage").attr("src",data.Image);
+		 	else
+		 	$("#Qimage").attr("src","{% static 'PrayaShala/noImage.png'%}");	
+		 		
+			var ca=data.Correct_Answers.split(";");
+			var wa=data.Wrong_Answers.split(";");
+			var newList=ca.concat(wa);
+			marks=data.Marks;
+			nmarks=data.Nmarks;
+			AnswerTemp=data.Correct_Answers;
+			 newList.sort(function() { return (Math.round(Math.random())-0.5); });  
+			if(data.Type==='single')
+			{
+				var options=""
+				no_of_opt=newList.length;
+				for(i=0;i<newList.length;i++)
+				{
+					var id1="spn"+i;
+				
+					options=options+"<div class='options row'><div class='col-xs-12 col-sm-9 col-md-9'>"+newList[i]+"</div><div class='col-xs-12 col-md-3 col-sm-3 checkedAnswer'><input type='checkbox' name='answer' class='chbox' value='"+newList[i]+
+					"'></div></div>";
+					
+				}
+
+				$("#Answer").html(options);
+				$("#ma").html(marks);
+				$("#nm").html(nmarks);
+
+				
+
+				
+			}
+			}
+});
+return false;
+});
+
+
+$("#Answer").on('click','.chbox',function(){
+
+	$("#Answer .chbox").prop('checked',false);
+	$(this).prop('checked',true);
+});
+
+$("#save").click(function(){
+	var answer=$("input[name='answer']:checked").val();
+	alert(answer);
+	Attempted=Attempted+1;
+
+if(answer===AnswerTemp)
+	Marks[Qno]=marks;
+if(answer!==AnswerTemp)
+	Marks[Qno]=nmarks;
+$("#"+Qno).css("background-color","Green");
+
+return false;
+
+});
+
+$("#prev").click(function(){
+
+$("#"+Qno).removeClass("shadow");
+
+Qno=Qno-1;
+
+$("#"+Qno).addClass("shadow");
+$("#QN").val(Qno);
+$("#start").click();
+
+
+if(Qno==1)
+{
+	$('#prev').prop('disabled', true);
+}
+else
+{
+	$('#prev').prop('disabled', false);
+
+}
+$("#next").prop('disabled',false);
+return false;
+
+});
+
+$("#next").click(function(){
+	$("#"+Qno).removeClass("shadow");
+Qno=Qno+1;
+$("#"+Qno).addClass("shadow");
+
+$("#QN").val(Qno);
+$("#start").click();
+
+
+if(Qno==total)
+{
+	$('#next').prop('disabled', true);
+}
+else
+{
+	$('#next').prop('disabled', false);
+
+}
+$("#prev").prop('disabled',false);
+
+return false;
+
+});
+
+$("#finish").click(function(){
+var sum=0;
+	for(i=1;i<=total;i++)
+{
+if(Marks[i]!=="#" && parseInt(Marks[i],10)<=0)
+	{Wrong=Wrong+1;
+	sum=sum+parseInt(Marks[i],10);}
+
+if(Marks[i]!=="#" && parseInt(Marks[i],10)>0)
+	{
+		Correct=Correct+1;
+	sum=sum+parseInt(Marks[i],10);
+}
+
+	
+
+	
+}
+$("#TQ").html("<center>"+total+"</center>");
+$("#TAQ").html("<center>"+Attempted+"</center>");
+$("#CA").html("<center>"+Correct+"</center>");
+$("#WA").html("<center>"+Wrong+"</center>");
+$("#MO").html("<center>"+sum+"</center>");
+$("#Result").click();
+});
+
+
+
+
+$(".qlinks").click(function(){
+
+	var href=$(this).attr("href");
+    $(this).addClass("shadow");
+
+	$("#QN").val(href);
+    
+   $("#"+Qno).removeClass("shadow");
+   $("#start").click();
+
+  if(href===total)
+{
+	$('#next').prop('disabled', true);
+}
+else
+{
+	$('#next').prop('disabled', false);
+
+}
+
+
+if(href===1)
+{
+	$('#prev').prop('disabled', true);
+}
+else
+{
+	$('#prev').prop('disabled', false);
+
+}
+
+
+return false;
+
+
+});
+
+$("#exit").click(function(){
+
+	$("#Exit").submit();
+});
+
+
+
+
+
+
+       });
+
+
+
+       </script>
+ </head>
+ <body >
+
+<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#Imodal" id="modalbutton">Open Modal</button>
+ <div class="modal fade" id="Imodal" role="dialog" style="background-color:black;" >
+	<div class="modal-dialog">
+		<div class="modal-content" id="modalcontent">
+		<div class="modal-headar" id="modalheader"><center><h2 class="modal-title">Genral Instructions</h2></center> </div>
+
+		<div class="modal-body" style="font-family:cursive;font-size:20px">
+			<ul>
+				<li>There are total {{dataT.No_of_Questions}} Questions. </li>
+				<li>Time Duration :</li>
+				<li>The Question Board at the right side of screen shows one of the following status  of the question.
+				<ul>
+<li> Red Marked: You have not answered the question.</li>
+ <li>Green Marked: You have answered the question.</li>
+ </ul>
+ </li>
+ <li>Each Question have corresponding Positive Marks for right answer and Negative marks for wrong answer.</li>
+ <li>You see multiple options for every question.</li>
+ <li>There are checkbox for multiple answers questions and radio button for single answer questions.</li>
+ <li>To select your answer, click the following option buttons.</li>
+ <li>To save your answer, you MUST click on Save.</li>
+ <li>To end test click finish button.</li>
+ <center>All the Best !</center>
+			</ul>
+		</div>
+		<div class="modal-footer">
+       <center> <button type="button" class="btn btn-default" data-dismiss="modal" id="ok">OK</button></center>
+		</div>
+		</div>
+		</div>
+		</div>
+			
+<div class="container">
+ 
+    <div class="row" >
+    <h3 >Time Limit: <span id="timer"></span> </h3>
+   <div id="myProgress">
+  <div id="myBar"></div>
+  </div>
+  </div>
+<div id="test"></div>
+	<div class="row" id="QB">
+			
+			{% for Q in dataQ %}
+				
+			<a href="{{Q.Question_No}}" class="qlinks" id="{{Q.Question_No}}" style="text-decoration: none;transformation:transparent">{{Q.Question_No}}</a>
+				
+			{% endfor %}
+		
+		</div>
+	
+		<div class="row" id="Quebox" >
+		<div class="col-xs-12 col-md-2 col-sm-2">
+		<h4><span id="Qno" style="font-family:cursive"> </span></h4>
+		</div>
+		<div class="col-sm-4 col-md-4"></div>
+		<div class="col-xs-12 col-md-3 col-sm-3">Marks For Correct Answer: <div id="ma" style="display:inline"></div></div>
+		    <div class="col-xs-12 col-md-3 col-sm-3">Marks For Wrong Answer: <div id="nm" style="display:inline"></div></div>
+
+		   <div class="col-sm-12 col-md-12 col-xs-12"></div>
+		  <center><h3 style="font-family:cursive"> <span id="Question"></span></h3></center>
+
+		<center> <div style="width:300px;height:200px;border-width:1px"> <img src= ""id="Qimage" width="300px" height="200px"></div></center>
+
+		  <center><div id="Answer" style="margin:20px;padding:20px;"></div></center>
+		  
+	  
+
+		 
+  <button type="button" class="btn btn-primary" id="prev">Previous</button>
+  <button type="button" class="btn btn-primary" id="save">Save</button>
+  <button type="button" class="btn btn-primary" id="next">Next</button>
+    <button type="button" class="btn btn-primary" id="finish">Finish</button>
+
+   
+
+		  </div>
+		
+		
+
+	</div>
+
+
+
+<div class="modal fade" id="Rmodal" role="dialog" style="background-color:black;" >
+	<div class="modal-dialog">
+		<div class="modal-content" id="modalcontent">
+		<div class="modal-headar" id="modalheader"><center><h2 class="modal-title">Report Card</h2></center> </div>
+
+		<div class="modal-body" style="font-family:cursive;font-size:20px">
+			<table class="table">
+				<tbody>
+				<tr>
+					<td><center>Total Question </center></td>
+					<td><center>Total Attempted Question</center></td>
+					<td><center>Correct Answer</center></td>
+					<td><center>Wrong Answer</center></td>
+					<td><center>Marks Obtained</center></td>
+				</tr>
+				<td id="TQ"></td>
+				<td id="TAQ"></td>
+				<td id="CA"></td>
+				<td id="WA"></td>
+				<td id="MO"></td>
+				</tbody>
+			</table>
+		</div>
+		<div class="modal-footer">
+       <center> <button type="button" class="btn btn-default" data-dismiss="modal" id="exit">OK</button></center>
+		</div>
+		</div>
+		</div>
+		</div>
+
+<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#Rmodal" id="Result">Open Modal</button>
+
+ </body>
+ <form  method="post" id="fp" style="Display:hidden">
+{% csrf_token %}
+<input type="hidden" name="email" value="{{dataT.Email}}">
+<input type="hidden" name="testid" value="{{dataT.Test_id}}">
+<input type="hidden" name="QN" value="1" id="QN">
+<input  type="submit" id="start">
+ </form>
+
+
+ <input type="hidden" value="{{dataT.No_of_Questions}}" id="totalQ">
+  <input type="hidden" value="{{dataT.Duration}}" id="dur">
+
+ <form style="display: hidden" action="/instituteHome/" method="POST" id="Exit">
+{% csrf_token %}
+
+  <input type="hidden" id="var1" name="email" value="{{dataT.Email}}"/>
+  <input type="hidden" id="var1" name="Email" value="{{Email}}"/>
+
+  </form>
+
+	
+</html>

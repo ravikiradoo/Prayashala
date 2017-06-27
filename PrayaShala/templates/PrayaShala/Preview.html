@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,➥initial-scale=1">
+{% load static %}
+	<title>Prayashala</title>
+
+	<link rel="stylesheet" type="text/css" href="{% static 'PrayaShala/Preview.css' %}">
+	 <link href="{% static 'PrayaShala/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'PrayaShala/css/bootstrap-theme.min.css' %}" rel="stylesheet">
+    <link href="{% static 'PrayaShala/css/font-awesome.min.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+       <script src="{% static 'PrayaShala/js/jquery.min.js' %}"></script>
+
+	<script>
+	
+function AddQuestion()
+{
+
+var que=$(".Question").val();
+var qno=$(".Question_no").val();
+var wrong=$(".WrongAnswers").val();
+var correct=$(".CorrectAnswers").val();
+wrong=wrong.replaceAll(";"," ");
+correct=correct.replaceAll(";"," ");
+var a="<div class='row' style='border-style:solid'><div class='col-xs-12 col-md-12 col-sm-12'>"
++que+"</div><div class='col-xs-12 col-sm-12 col-md-12'>"+wrong+"</div><div class='col-xs-12 col-md-12 col-sm-12'>"+correct+"</div></div>";
+$("#Questionbox").append(a);
+
+$(".Question").remove();
+$(".Question_no").remove();
+$(".Wrong_Answers").remove();
+$(".Correct_Answers").remove();
+
+}
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.split(search).join(replacement);
+};
+
+
+	</script>
+
+  </head>
+
+<body>
+
+
+
+
+<div class="container-fluid" >
+
+<div class="row">
+	<div class="col-md-3 col-sm-3"></div>
+	<div class="col-md-6 col-sm-6" id="Questionbox" ></div>
+	<div class="col-md-3 col-sm-3"></div>
+</div>
+</div>
+
+{% for Q in data  %}
+<input type="hidden" value="{{Q.Question_No}}" class="Question_no">
+<input type="hidden" value="{{Q.Question}}" class="Question">
+<input type="hidden" value="{{Q.Wrong_Answers}}" class="WrongAnswers">
+<input type="hidden" value="{{Q.Correct_Answers}}" class="CorrectAnswers">
+
+<script> AddQuestion()</script>
+
+
+{% endfor %}
+
+
+
+</body>
